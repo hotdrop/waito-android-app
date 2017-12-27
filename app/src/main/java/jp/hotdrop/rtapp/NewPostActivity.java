@@ -22,7 +22,7 @@ import jp.hotdrop.rtapp.models.User;
 
 public class NewPostActivity extends BaseActivity {
 
-    // TODO classのgetSimpleNameにすべき
+    // TODO classのgetSimpleNameにしたい
     private static final String TAG = "NewPostActivity";
     private static final String REQUIRED = "Required";
 
@@ -55,7 +55,7 @@ public class NewPostActivity extends BaseActivity {
         final String title = mTitleField.getText().toString();
         final String body = mBodyField.getText().toString();
 
-        // TODO validateはメソッドを分けるべき
+        // TODO validateはメソッドを分けたほうがいいかな
         if (TextUtils.isEmpty(title)) {
             mTitleField.setError(REQUIRED);
             return;

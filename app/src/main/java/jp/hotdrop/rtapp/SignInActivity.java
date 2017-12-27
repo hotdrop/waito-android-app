@@ -22,7 +22,7 @@ import jp.hotdrop.rtapp.models.User;
 
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
-    // TODO getSimpleNameにした方が
+    // TODO getSimpleNameにしたい
     private static final String TAG = "SignInActivity";
 
     private DatabaseReference mDatabase;
@@ -41,7 +41,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        // TODO databindingかButterKnifeにすべき
+        // TODO databindingかButterKnifeにしたい
         mEmailField = findViewById(R.id.field_email);
         mPasswordField = findViewById(R.id.field_password);
         mSignInButton = findViewById(R.id.button_sign_in);
@@ -57,22 +57,6 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
         if (mAuth.getCurrentUser() != null) {
             onAuthSuccess(mAuth.getCurrentUser());
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        // ifをswitchで書き換えた。本当はButterKnifeかdatabinding使うべき
-        switch (i) {
-            case R.id.button_sign_in:
-                signIn();
-                break;
-            case R.id.button_sign_up:
-                signUp();
-                break;
-            default:
-                // no op
         }
     }
 
@@ -103,7 +87,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void signUp() {
-        // TODO Timberにすべき
+        // TODO Timberにしたい
         Log.d(TAG, "signUp");
         if (!validateForm()) {
             return;
@@ -139,13 +123,12 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private String usernameFromEmail(String email) {
-        // ifを三項演算子で書き換えた
-        return email.contains("@")? email.split("@")[0] : email;
-    }
-
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
-        mDatabase.child("users").child(userId).setValue(user);
+        // TODO 三項演算子でいけそう
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
     }
 
     private boolean validateForm() {
@@ -163,6 +146,23 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         } else {
             mPasswordField.setError(null);
         }
+
         return result;
+    }
+
+    private void writeNewUser(String userId, String name, String email) {
+        User user = new User(name, email);
+        mDatabase.child("users").child(userId).setValue(user);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        // TODO switchの方がいいかも
+        if (i == R.id.button_sign_in) {
+            signIn();
+        } else if (i == R.id.button_sign_up) {
+            signUp();
+        }
     }
 }
