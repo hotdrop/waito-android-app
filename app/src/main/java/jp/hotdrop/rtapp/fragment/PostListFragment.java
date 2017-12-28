@@ -28,7 +28,7 @@ import jp.hotdrop.rtapp.viewholder.PostViewHolder;
 
 public abstract class PostListFragment extends Fragment {
 
-    // TODO
+    // TODO classのgetSimpleNameにしたい
     private static final String TAG = "PostListFragment";
 
     private DatabaseReference mDatabase;

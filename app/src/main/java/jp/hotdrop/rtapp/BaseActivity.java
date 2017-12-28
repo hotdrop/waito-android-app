@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class BaseActivity extends AppCompatActivity {
 
+    // TODO ProgressDialogはDeprecatedになっているので代替手段を考える
     private ProgressDialog mProgressDialog;
 
     public void showProgressDialog() {

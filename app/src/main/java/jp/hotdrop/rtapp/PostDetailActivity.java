@@ -62,7 +62,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mCommentsReference = FirebaseDatabase.getInstance().getReference()
                 .child("post-comments").child(mPostKey);
 
-        // databinding or butter
+        // TODO databinding or butterにしたい
         mAuthorView = findViewById(R.id.post_author);
         mTitleView = findViewById(R.id.post_title);
         mBodyView = findViewById(R.id.post_body);
@@ -78,6 +78,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
 
+        // TODO 一度ポストしたデータは編集不能？
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -140,6 +141,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 });
     }
 
+    // TODO 小さいけど一応viewholderパッケージがあるならそこに定義すべき
     private static class CommentViewHolder extends RecyclerView.ViewHolder {
         public TextView authorView;
         public TextView bodyView;
@@ -158,7 +160,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         private DatabaseReference mDatabaseReference;
         private ChildEventListener mChildEventListener;
 
-        // TODO idとcommentを分ける意味を理解する
+        // TODO idとcommentを分ける意味を理解する。別にPairがあればそれで良さそうだ
         private List<String> mCommentIds = new ArrayList<>();
         private List<Comment> mComments = new ArrayList<>();
 

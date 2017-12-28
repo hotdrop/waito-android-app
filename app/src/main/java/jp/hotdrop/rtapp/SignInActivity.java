@@ -28,6 +28,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
+    // TODO databindingかButterKnifeにしたい
     private EditText mEmailField;
     private EditText mPasswordField;
     private Button mSignInButton;
@@ -41,7 +42,6 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
-        // TODO databindingかButterKnifeにしたい
         mEmailField = findViewById(R.id.field_email);
         mPasswordField = findViewById(R.id.field_password);
         mSignInButton = findViewById(R.id.button_sign_in);
@@ -55,21 +55,26 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     public void onStart() {
         super.onStart();
 
+        // まだメンバのオブジェクトが残っていれば自動でログインして画面遷移する
         if (mAuth.getCurrentUser() != null) {
             onAuthSuccess(mAuth.getCurrentUser());
         }
     }
 
     private void signIn() {
+        // TODO Timber入れる
         Log.d(TAG, "signIn");
+
         if (!validateForm()) {
             return;
         }
 
+        // TODO Firebaseの接続が返ってこないとプログレスバーがhideされないので改善の余地あり。addOnFailureListenerを実装すればいい？
         showProgressDialog();
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
+        // TODO SAM変換できないものか
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -88,7 +93,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void signUp() {
-        // TODO Timberにしたい
+        // TODO Timber入れる
         Log.d(TAG, "signUp");
         if (!validateForm()) {
             return;
@@ -115,24 +120,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
-    private void onAuthSuccess(FirebaseUser user) {
-        String username = usernameFromEmail(user.getEmail());
-
-        writeNewUser(user.getUid(), username, user.getEmail());
-
-        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-        finish();
-    }
-
-    private String usernameFromEmail(String email) {
-        // TODO 三項演算子でいけそう
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
-    }
-
+    /**
+     * TODO このバリデーションの中身は必須入力チェックのみ。
+     * 必須入力は視覚的に見せるようにしたい。そして次の操作はできないようにしたい。
+     * @return
+     */
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {
@@ -150,6 +142,26 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         }
 
         return result;
+    }
+
+    private void onAuthSuccess(FirebaseUser user) {
+        // TODO ユーザー名をメアドの左側で決め打ちするのなら、SignUpの時にそれを警告した方がいい
+        String username = usernameFromEmail(user.getEmail());
+
+        writeNewUser(user.getUid(), username, user.getEmail());
+
+        // TODO startActivityはNavigationクラス作ってそこに任せたい
+        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+        finish();
+    }
+
+    private String usernameFromEmail(String email) {
+        // TODO 三項演算子でいけそう
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
     }
 
     private void writeNewUser(String userId, String name, String email) {
