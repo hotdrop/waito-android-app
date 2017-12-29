@@ -22,8 +22,7 @@ import jp.hotdrop.rtapp.models.User;
 
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
-    // TODO getSimpleNameにしたい
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = SignInActivity.class.getSimpleName();
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;

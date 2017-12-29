@@ -18,8 +18,7 @@ import jp.hotdrop.rtapp.fragment.RecentPostsFragment;
 
 public class MainActivity extends BaseActivity {
 
-    // TODO classのgetSimpleNameにしたい
-    private static final String TAG =  "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;

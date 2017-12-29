@@ -29,8 +29,7 @@ import jp.hotdrop.rtapp.models.User;
 
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
 
-    // TODO classのgetSimpleNameにすべき
-    private static final String TAG = "PostDetailActivity";
+    private static final String TAG = PostDetailActivity.class.getSimpleName();
 
     public static final String EXTRA_POST_KEY = "post_key";
 

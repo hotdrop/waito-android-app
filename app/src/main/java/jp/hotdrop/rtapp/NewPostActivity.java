@@ -22,8 +22,7 @@ import jp.hotdrop.rtapp.models.User;
 
 public class NewPostActivity extends BaseActivity {
 
-    // TODO classのgetSimpleNameにしたい
-    private static final String TAG = "NewPostActivity";
+    private static final String TAG = NewPostActivity.class.getSimpleName();
     private static final String REQUIRED = "Required";
 
     private DatabaseReference mDatabase;
