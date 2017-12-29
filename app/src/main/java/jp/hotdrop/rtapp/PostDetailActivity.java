@@ -56,10 +56,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-        mPostReference = FirebaseDatabase.getInstance().getReference()
-                .child("posts").child(mPostKey);
-        mCommentsReference = FirebaseDatabase.getInstance().getReference()
-                .child("post-comments").child(mPostKey);
+        mPostReference = FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey);
+        mCommentsReference = FirebaseDatabase.getInstance().getReference().child("post-comments").child(mPostKey);
 
         // TODO databinding or butterにしたい
         mAuthorView = findViewById(R.id.post_author);
@@ -111,9 +109,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.button_post_comment) {
-            postComment();
+        switch (v.getId()) {
+            case R.id.button_post_comment:
+                postComment();
+                break;
+            default:
+                // なし
         }
     }
 

@@ -155,12 +155,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private String usernameFromEmail(String email) {
-        // TODO 三項演算子でいけそう
-        if (email.contains("@")) {
-            return email.split("@")[0];
-        } else {
-            return email;
-        }
+        return (email.contains("@"))? email.split("@")[0] : email;
     }
 
     private void writeNewUser(String userId, String name, String email) {
@@ -170,12 +165,16 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        int i = v.getId();
-        // TODO switchの方がいいかも
-        if (i == R.id.button_sign_in) {
-            signIn();
-        } else if (i == R.id.button_sign_up) {
-            signUp();
+        // TODO databindinかButterKnifeでボタン毎にイベント作ったほうがいい
+        switch (v.getId()) {
+            case R.id.button_sign_in:
+                signIn();
+                break;
+            case R.id.button_sign_up:
+                signUp();
+                break;
+            default:
+                // ここにきたら基本はNG。Exception投げるか？
         }
     }
 }

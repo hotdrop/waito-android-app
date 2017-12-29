@@ -58,7 +58,7 @@ public abstract class PostListFragment extends Fragment {
 
         mManager = new LinearLayoutManager(getActivity());
 
-        // TODO 新しく登録したものを一番上に持ってくる？もしくは一番下か。
+        // TODO 新しく登録したものを一番上に持ってくるため逆順にしている。
         mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
