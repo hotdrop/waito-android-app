@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import jp.hotdrop.rtapp.models.User;
+import timber.log.Timber;
 
 public class SignInActivity extends BaseActivity implements View.OnClickListener {
 
@@ -61,8 +61,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void signIn() {
-        // TODO Timber入れる
-        Log.d(TAG, "signIn");
+        Timber.d("signIn");
 
         if (!validateForm()) {
             return;
@@ -74,17 +73,19 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         String password = mPasswordField.getText().toString();
 
         // TODO SAM変換できないものか
+        // TODO signInWithEmailAndPasswordでNPEになるときがあるのでonFailureListenerとか入れて対応できないか
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
+
                         hideProgressDialog();
 
                         if (task.isSuccessful()) {
+                            Timber.d("signIn Success!");
                             onAuthSuccess(task.getResult().getUser());
                         } else {
-                            Log.w(TAG, "signInWithEmailAndPassword:failure", task.getException());
+                            Timber.w(task.getException(), "signIn failure");
                             Toast.makeText(SignInActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -92,8 +93,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void signUp() {
-        // TODO Timber入れる
-        Log.d(TAG, "signUp");
+        Timber.d("signUp");
         if (!validateForm()) {
             return;
         }
@@ -106,13 +106,14 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUser:onComplete:" + task.isSuccessful());
+
                         hideProgressDialog();
 
                         if (task.isSuccessful()) {
+                            Timber.d("createUser Success!");
                             onAuthSuccess(task.getResult().getUser());
                         } else {
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Timber.w(task.getException(), "createUser failure");
                             Toast.makeText(SignInActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -165,7 +166,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        // TODO databindinかButterKnifeでボタン毎にイベント作ったほうがいい
+        // TODO databindingかButterKnifeでボタン毎にイベント作ったほうがいい
         switch (v.getId()) {
             case R.id.button_sign_in:
                 signIn();

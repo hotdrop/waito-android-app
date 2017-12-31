@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import java.util.List;
 import jp.hotdrop.rtapp.models.Comment;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
+import timber.log.Timber;
 
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
 
@@ -87,7 +87,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                Timber.w(databaseError.toException(), "loadPost:onCancelled");
                 Toast.makeText(PostDetailActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
             }
         };
@@ -171,7 +171,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             ChildEventListener childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+                    Timber.d("onChildAdded: key=%s", dataSnapshot.getKey());
 
                     Comment comment = dataSnapshot.getValue(Comment.class);
                     mCommentIds.add(dataSnapshot.getKey());
@@ -181,7 +181,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+                    Timber.d("onChildChanged: key=%s", dataSnapshot.getKey());
 
                     Comment newComment = dataSnapshot.getValue(Comment.class);
                     String commentKey = dataSnapshot.getKey();
@@ -191,13 +191,13 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                         mComments.set(commentIndex, newComment);
                         notifyItemChanged(commentIndex);
                     } else {
-                        Log.w(TAG, "onChildChanged:unknown_child:" + commentKey);
+                        Timber.w("onChildChanged:unknown child. key=%s", commentKey);
                     }
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+                    Timber.d("onChildRemoved: key=%s", dataSnapshot.getKey());
 
                     String commentKey = dataSnapshot.getKey();
                     int commentIndex = mCommentIds.indexOf(commentKey);
@@ -206,13 +206,13 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                         mComments.remove(commentIndex);
                         notifyItemRemoved(commentIndex);
                     } else {
-                        Log.w(TAG, "onChildRemoved:unknown_child:" + commentKey);
+                        Timber.w("onChildRemoved:unknown child. key=%s", commentKey);
                     }
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+                    Timber.d("onChildMoved: key=%s", dataSnapshot.getKey());
 
                     Comment movedComment = dataSnapshot.getValue(Comment.class);
                     String commentKey = dataSnapshot.getKey();
@@ -223,7 +223,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+                    Timber.w(databaseError.toException(), "postComments:onCancelled");
                     Toast.makeText(mContext, "Failed to load comments.", Toast.LENGTH_SHORT).show();
                 }
             };

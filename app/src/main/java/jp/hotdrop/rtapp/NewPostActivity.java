@@ -3,7 +3,6 @@ package jp.hotdrop.rtapp;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import java.util.Map;
 
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
+import timber.log.Timber;
 
 public class NewPostActivity extends BaseActivity {
 
@@ -75,7 +75,7 @@ public class NewPostActivity extends BaseActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
                         if (user == null) {
-                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Timber.e("User %s is unexpectedly null", userId);
                             Toast.makeText(NewPostActivity.this,
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
@@ -89,7 +89,7 @@ public class NewPostActivity extends BaseActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                        Timber.w(databaseError.toException(), "getUser:onCancelled");
                         setEditingEnabled(true);
                     }
                 }

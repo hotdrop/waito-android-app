@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import jp.hotdrop.rtapp.PostDetailActivity;
 import jp.hotdrop.rtapp.R;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.viewholder.PostViewHolder;
+import timber.log.Timber;
 
 public abstract class PostListFragment extends Fragment {
 
@@ -133,7 +133,7 @@ public abstract class PostListFragment extends Fragment {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                Timber.d("postTransaction:onComplete:%s", databaseError);
             }
         });
     }
