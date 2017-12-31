@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/comment_photo"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/photo_margin"
+        android:layout_height="@dimen/photo_margin"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_action_account_circle_40"/>
 
@@ -15,9 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:padding="5dp"
-        android:layout_toRightOf="@+id/comment_photo">
+        android:padding="@dimen/space_small"
+        android:layout_toEndOf="@+id/comment_photo">
 
         <TextView
             android:id="@+id/comment_author"
@@ -31,7 +30,7 @@
             style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/hint_comment_body"/>
+            tools:text="Sample Comment"/>
 
     </LinearLayout>
 

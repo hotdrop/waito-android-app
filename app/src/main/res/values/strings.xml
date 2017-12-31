@@ -20,8 +20,8 @@
     <!-- text field hint -->
     <string name="hint_password">パスワード</string>
     <string name="hint_email">Eメール</string>
-    <string name="hint_post_title">投稿タイトルを書いてください。</string>
-    <string name="hint_post_body">投稿の本文を書いてください。</string>
+    <string name="hint_post_title">タイトルを書いてください。</string>
+    <string name="hint_post_body">本文を書いてください。</string>
     <string name="hint_write_comment">投稿に何かコメントがあれば記載してください。</string>
     <string name="hint_comment_body">ここにコメントを書いてください。</string>
 
