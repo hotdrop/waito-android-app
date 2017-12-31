@@ -9,9 +9,8 @@
         android:id="@+id/messages_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:clipToPadding="false"
-        android:padding="5dp"
+        android:padding="@dimen/space_ex_small"
         android:scrollbars="vertical"
         tools:listitem="@layout/item_post" />
 
