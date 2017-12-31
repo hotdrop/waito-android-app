@@ -65,7 +65,7 @@ public class NewPostActivity extends BaseActivity {
             return;
         }
 
-        setEditingEnabled(false);
+        disabledEditingField();
         Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
 
         final String userId = getUid();
@@ -83,28 +83,29 @@ public class NewPostActivity extends BaseActivity {
                             writeNewPost(userId, user.username, title, body);
                         }
 
-                        setEditingEnabled(true);
+                        enableEditingField();
                         finish();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Timber.w(databaseError.toException(), "getUser:onCancelled");
-                        setEditingEnabled(true);
+                        enableEditingField();
                     }
                 }
         );
     }
 
-    // TODO EnableとDisable両方の責務をになっており非常によくない。EnableとDisableのメソッドに分けるべき
-    private void setEditingEnabled(boolean enabled) {
-        mTitleField.setEnabled(enabled);
-        mBodyField.setEnabled(enabled);
-        if (enabled) {
-            mSubmitButton.setVisibility(View.VISIBLE);
-        } else {
-            mSubmitButton.setVisibility(View.GONE);
-        }
+    private void enableEditingField() {
+        mTitleField.setEnabled(true);
+        mBodyField.setEnabled(true);
+        mSubmitButton.setVisibility(View.VISIBLE);
+    }
+
+    private void disabledEditingField() {
+        mTitleField.setEnabled(false);
+        mBodyField.setEnabled(false);
+        mSubmitButton.setVisibility(View.GONE);
     }
 
     private void writeNewPost(String userId, String username, String title, String body) {
