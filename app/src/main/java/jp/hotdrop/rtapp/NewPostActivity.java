@@ -23,7 +23,6 @@ import timber.log.Timber;
 public class NewPostActivity extends BaseActivity {
 
     private static final String TAG = NewPostActivity.class.getSimpleName();
-    private static final String REQUIRED = "Required";
 
     private DatabaseReference mDatabase;
 
@@ -56,43 +55,43 @@ public class NewPostActivity extends BaseActivity {
 
         // TODO validateはメソッドを分けたほうがいいかな
         if (TextUtils.isEmpty(title)) {
-            mTitleField.setError(REQUIRED);
+            mTitleField.setError(getString(R.string.text_warning_required));
             return;
         }
 
         if (TextUtils.isEmpty(body)) {
-            mBodyField.setError(REQUIRED);
+            mBodyField.setError(getString(R.string.text_warning_required));
             return;
         }
 
         disabledEditingField();
-        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_post_loading), Toast.LENGTH_SHORT).show();
 
         final String userId = getUid();
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if (user == null) {
-                            Timber.e("User %s is unexpectedly null", userId);
-                            Toast.makeText(NewPostActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            writeNewPost(userId, user.username, title, body);
+        mDatabase.child(getString(R.string.child_users))
+                .child(userId)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                if (user == null) {
+                                    Timber.e("User %s is unexpectedly null", userId);
+                                    Toast.makeText(NewPostActivity.this, getString(R.string.toast_post_failure), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    writeNewPost(userId, user.username, title, body);
+                                }
+
+                                enableEditingField();
+                                finish();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Timber.w(databaseError.toException(), "getUser:onCancelled");
+                                enableEditingField();
+                            }
                         }
-
-                        enableEditingField();
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Timber.w(databaseError.toException(), "getUser:onCancelled");
-                        enableEditingField();
-                    }
-                }
         );
     }
 
@@ -109,13 +108,15 @@ public class NewPostActivity extends BaseActivity {
     }
 
     private void writeNewPost(String userId, String username, String title, String body) {
-        String key = mDatabase.child("posts").push().getKey();
+        String key = mDatabase.child(getString(R.string.child_posts))
+                .push()
+                .getKey();
         Post post = new Post(userId, username, title, body);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/"+ key, postValues);
-        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+        childUpdates.put("/"+ getString(R.string.child_posts) + "/" + key, postValues);
+        childUpdates.put("/" + getString(R.string.child_user_posts) + "/" + userId + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }

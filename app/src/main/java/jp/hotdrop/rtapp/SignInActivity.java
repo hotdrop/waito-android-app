@@ -86,7 +86,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                             onAuthSuccess(task.getResult().getUser());
                         } else {
                             Timber.w(task.getException(), "signIn failure");
-                            Toast.makeText(SignInActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_in_failure), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -114,7 +114,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                             onAuthSuccess(task.getResult().getUser());
                         } else {
                             Timber.w(task.getException(), "createUser failure");
-                            Toast.makeText(SignInActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_up_failure), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -128,14 +128,14 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     private boolean validateForm() {
         boolean result = true;
         if (TextUtils.isEmpty(mEmailField.getText().toString())) {
-            mEmailField.setError("Required");
+            mEmailField.setError(getString(R.string.text_warning_required));
             result = false;
         } else {
             mEmailField.setError(null);
         }
 
         if (TextUtils.isEmpty(mPasswordField.getText().toString())) {
-            mPasswordField.setError("Required");
+            mPasswordField.setError(getString(R.string.text_warning_required));
             result = false;
         } else {
             mPasswordField.setError(null);
@@ -161,7 +161,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(name, email);
-        mDatabase.child("users").child(userId).setValue(user);
+        mDatabase.child(getString(R.string.child_users)).child(userId).setValue(user);
     }
 
     @Override

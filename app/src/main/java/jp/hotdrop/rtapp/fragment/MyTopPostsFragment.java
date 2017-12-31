@@ -3,6 +3,8 @@ package jp.hotdrop.rtapp.fragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
+import jp.hotdrop.rtapp.R;
+
 public class MyTopPostsFragment extends PostListFragment {
 
     public MyTopPostsFragment() {
@@ -10,6 +12,6 @@ public class MyTopPostsFragment extends PostListFragment {
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
-        return databaseReference.child("user-posts").child(getUid()).orderByChild("starCount");
+        return databaseReference.child(getString(R.string.child_user_posts)).child(getUid()).orderByChild("starCount");
     }
 }

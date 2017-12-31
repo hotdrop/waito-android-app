@@ -93,8 +93,11 @@ public abstract class PostListFragment extends Fragment {
                     // TODO lambdaにできるはず
                     @Override
                     public void onClick(View starView) {
-                        DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
+                        DatabaseReference globalPostRef = mDatabase.child(getString(R.string.child_posts))
+                                .child(postRef.getKey());
+                        DatabaseReference userPostRef = mDatabase.child(getString(R.string.child_user_posts))
+                                .child(model.uid)
+                                .child(postRef.getKey());
                         onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
                     }

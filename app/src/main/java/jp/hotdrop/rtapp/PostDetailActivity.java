@@ -57,8 +57,14 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey);
-        mCommentsReference = FirebaseDatabase.getInstance().getReference().child("post-comments").child(mPostKey);
+        mPostReference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.child_posts))
+                .child(mPostKey);
+        mCommentsReference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.child_post_comments))
+                .child(mPostKey);
 
         // TODO databinding or butterにしたい
         mAuthorView = findViewById(R.id.post_author);
@@ -89,7 +95,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Timber.w(databaseError.toException(), "loadPost:onCancelled");
-                Toast.makeText(PostDetailActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PostDetailActivity.this, getString(R.string.toast_post_cancel), Toast.LENGTH_SHORT).show();
             }
         };
         mPostReference.addValueEventListener(postListener);
@@ -121,13 +127,16 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     private void postComment() {
         final String uid = getUid();
-        FirebaseDatabase.getInstance().getReference().child("users").child(uid)
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(getString(R.string.child_users))
+                .child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                         User user = dataSnapshot.getValue(User.class);
                         String authorName = user.username;
-
                         String commentText = mCommentField.getText().toString();
                         Comment comment = new Comment(uid, authorName, commentText);
 
@@ -211,7 +220,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Timber.w(databaseError.toException(), "postComments:onCancelled");
-                    Toast.makeText(mContext, "Failed to load comments.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContext.getString(R.string.toast_post_comment_cancel), Toast.LENGTH_SHORT).show();
                 }
             };
             ref.addChildEventListener(childEventListener);
