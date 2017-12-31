@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,13 +21,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.hotdrop.rtapp.models.Comment;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
 import jp.hotdrop.rtapp.viewholder.CommentViewHolder;
 import timber.log.Timber;
 
-public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
+public class PostDetailActivity extends BaseActivity {
 
     private static final String TAG = PostDetailActivity.class.getSimpleName();
 
@@ -37,44 +39,44 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private DatabaseReference mPostReference;
     private DatabaseReference mCommentsReference;
     private ValueEventListener mPostListener;
-    private String mPostKey;
     private CommentAdapter mAdapter;
 
-    private TextView mAuthorView;
-    private TextView mTitleView;
-    private TextView mBodyView;
-    private EditText mCommentField;
-    private Button mCommentButton;
-    private RecyclerView mCommentsRecycler;
+    @BindView(R.id.post_author)
+    TextView mAuthorView;
+
+    @BindView(R.id.post_title)
+    TextView mTitleView;
+
+    @BindView(R.id.post_body)
+    TextView mBodyView;
+
+    @BindView(R.id.field_comment_text)
+    EditText mCommentField;
+
+    @BindView(R.id.recycler_comments)
+    RecyclerView mCommentsRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
-        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
-        if (mPostKey == null) {
+        String postKey = getIntent().getStringExtra(EXTRA_POST_KEY);
+        if (postKey == null) {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
+
+        ButterKnife.bind(this);
 
         mPostReference = FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.child_posts))
-                .child(mPostKey);
+                .child(postKey);
         mCommentsReference = FirebaseDatabase.getInstance()
                 .getReference()
                 .child(getString(R.string.child_post_comments))
-                .child(mPostKey);
+                .child(postKey);
 
-        // TODO databinding or butterにしたい
-        mAuthorView = findViewById(R.id.post_author);
-        mTitleView = findViewById(R.id.post_title);
-        mBodyView = findViewById(R.id.post_body);
-        mCommentField = findViewById(R.id.field_comment_text);
-        mCommentButton = findViewById(R.id.button_post_comment);
-        mCommentsRecycler = findViewById(R.id.recycler_comments);
-
-        mCommentButton.setOnClickListener(this);
         mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -82,7 +84,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
 
-        // TODO 一度ポストしたデータは編集不能？
+        // TODO 一度ポストしたデータは編集不能
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -114,18 +116,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mAdapter.cleanupListener();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_post_comment:
-                postComment();
-                break;
-            default:
-                // なし
-        }
-    }
-
-    private void postComment() {
+    @OnClick(R.id.button_post_comment)
+    void postComment() {
         final String uid = getUid();
         FirebaseDatabase.getInstance()
                 .getReference()
@@ -136,9 +128,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         User user = dataSnapshot.getValue(User.class);
-                        String authorName = user.username;
-                        String commentText = mCommentField.getText().toString();
-                        Comment comment = new Comment(uid, authorName, commentText);
+                        Comment comment = new Comment(uid, user.username, mCommentField.getText().toString());
 
                         mCommentsReference.push().setValue(comment);
                         mCommentField.setText(null);
@@ -161,6 +151,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         private List<Comment> mComments = new ArrayList<>();
 
         CommentAdapter(final Context context, DatabaseReference ref) {
+
             mContext = context;
             mDatabaseReference = ref;
 

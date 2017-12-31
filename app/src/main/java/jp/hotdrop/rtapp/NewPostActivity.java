@@ -16,6 +16,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
 import timber.log.Timber;
@@ -26,9 +29,14 @@ public class NewPostActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
 
-    private EditText mTitleField;
-    private EditText mBodyField;
-    private FloatingActionButton mSubmitButton;
+    @BindView(R.id.field_title)
+    EditText mTitleField;
+
+    @BindView(R.id.field_body)
+    EditText mBodyField;
+
+    @BindView(R.id.fab_submit_post)
+    FloatingActionButton mSubmitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +44,11 @@ public class NewPostActivity extends BaseActivity {
         setContentView(R.layout.activity_new_post);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mTitleField = findViewById(R.id.field_title);
-        mBodyField = findViewById(R.id.field_body);
-        mSubmitButton = findViewById(R.id.fab_submit_post);
-
-        mSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitPost();
-            }
-        });
+        ButterKnife.bind(this);
     }
 
-    private void submitPost() {
+    @OnClick(R.id.fab_submit_post)
+    void submitPost() {
         final String title = mTitleField.getText().toString();
         final String body = mBodyField.getText().toString();
 
@@ -65,6 +64,7 @@ public class NewPostActivity extends BaseActivity {
         }
 
         disabledEditingField();
+        // TODO このToastいらない・・
         Toast.makeText(this, getString(R.string.toast_post_loading), Toast.LENGTH_SHORT).show();
 
         final String userId = getUid();
@@ -98,6 +98,7 @@ public class NewPostActivity extends BaseActivity {
     private void enableEditingField() {
         mTitleField.setEnabled(true);
         mBodyField.setEnabled(true);
+        // TODO Databindingにしたい
         mSubmitButton.setVisibility(View.VISIBLE);
     }
 
