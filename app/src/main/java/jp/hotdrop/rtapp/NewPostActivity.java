@@ -3,7 +3,6 @@ package jp.hotdrop.rtapp;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,12 +18,11 @@ import java.util.Map;
 
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
+import timber.log.Timber;
 
 public class NewPostActivity extends BaseActivity {
 
-    // TODO classのgetSimpleNameにしたい
-    private static final String TAG = "NewPostActivity";
-    private static final String REQUIRED = "Required";
+    private static final String TAG = NewPostActivity.class.getSimpleName();
 
     private DatabaseReference mDatabase;
 
@@ -57,65 +55,68 @@ public class NewPostActivity extends BaseActivity {
 
         // TODO validateはメソッドを分けたほうがいいかな
         if (TextUtils.isEmpty(title)) {
-            mTitleField.setError(REQUIRED);
+            mTitleField.setError(getString(R.string.text_warning_required));
             return;
         }
 
         if (TextUtils.isEmpty(body)) {
-            mBodyField.setError(REQUIRED);
+            mBodyField.setError(getString(R.string.text_warning_required));
             return;
         }
 
-        setEditingEnabled(false);
-        Toast.makeText(this, "Posting...", Toast.LENGTH_SHORT).show();
+        disabledEditingField();
+        Toast.makeText(this, getString(R.string.toast_post_loading), Toast.LENGTH_SHORT).show();
 
         final String userId = getUid();
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if (user == null) {
-                            Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(NewPostActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            writeNewPost(userId, user.username, title, body);
+        mDatabase.child(getString(R.string.child_users))
+                .child(userId)
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                if (user == null) {
+                                    Timber.e("User %s is unexpectedly null", userId);
+                                    Toast.makeText(NewPostActivity.this, getString(R.string.toast_post_failure), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    writeNewPost(userId, user.username, title, body);
+                                }
+
+                                enableEditingField();
+                                finish();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Timber.w(databaseError.toException(), "getUser:onCancelled");
+                                enableEditingField();
+                            }
                         }
-
-                        setEditingEnabled(true);
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                        setEditingEnabled(true);
-                    }
-                }
         );
     }
 
-    // TODO EnableとDisable両方の責務をになっており非常によくない。EnableとDisableのメソッドに分けるべき
-    private void setEditingEnabled(boolean enabled) {
-        mTitleField.setEnabled(enabled);
-        mBodyField.setEnabled(enabled);
-        if (enabled) {
-            mSubmitButton.setVisibility(View.VISIBLE);
-        } else {
-            mSubmitButton.setVisibility(View.GONE);
-        }
+    private void enableEditingField() {
+        mTitleField.setEnabled(true);
+        mBodyField.setEnabled(true);
+        mSubmitButton.setVisibility(View.VISIBLE);
+    }
+
+    private void disabledEditingField() {
+        mTitleField.setEnabled(false);
+        mBodyField.setEnabled(false);
+        mSubmitButton.setVisibility(View.GONE);
     }
 
     private void writeNewPost(String userId, String username, String title, String body) {
-        String key = mDatabase.child("posts").push().getKey();
+        String key = mDatabase.child(getString(R.string.child_posts))
+                .push()
+                .getKey();
         Post post = new Post(userId, username, title, body);
         Map<String, Object> postValues = post.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/posts/"+ key, postValues);
-        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+        childUpdates.put("/"+ getString(R.string.child_posts) + "/" + key, postValues);
+        childUpdates.put("/" + getString(R.string.child_user_posts) + "/" + userId + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }

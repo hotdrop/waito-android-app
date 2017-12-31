@@ -1,19 +1,44 @@
 <resources>
     <string name="app_name">FireBase Database</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_login">Log in</string>
-    <string name="menu_logout">Log out</string>
-    <string name="login_label">Log In</string>
-    <string name="email_label">Email</string>
-    <string name="password_label">Password</string>
-    <string name="send_text">Send</string>
-    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec condimentum ante, quis mattis mi. Proin ut rhoncus libero, ac euismod neque. Ut suscipit, enim a facilisis consequat, orci lacus venenatis orci, at ultricies orci nulla sed ex. In condimentum viverra velit, eget feugiat libero imperdiet vel. Aenean pretium, lectus vitae bibendum bibendum, diam turpis convallis eros, quis tristique leo sapien at ipsum. Praesent eu odio id nulla lobortis auctor. Donec eget dolor eget nisl euismod commodo vel a lacus. Quisque ut justo vitae urna pharetra accumsan. Etiam dignissim neque iaculis mauris viverra, blandit rhoncus odio porttitor. Phasellus nibh arcu.</string>
-    <string name="title_sign_in">Welcome</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="hint_password">password</string>
-    <string name="hint_email">email</string>
-    <string name="sign_in">Sign In</string>
-    <string name="heading_recent">Recent</string>
-    <string name="heading_my_posts">My Posts</string>
-    <string name="heading_my_top_posts">My Top Posts</string>
+    <string name="action_settings">設定</string>
+
+    <string name="menu_login">ログイン</string>
+    <string name="menu_logout">ログアウト</string>
+
+    <!-- tab -->
+    <string name="tab_title_recent">最近の投稿</string>
+    <string name="tab_title_my_posts">自分の投稿</string>
+    <string name="tab_title_my_top_posts">自分の最近の投稿</string>
+
+    <string name="text_warning_required">必須</string>
+
+    <!-- button -->
+    <string name="sign_in_button">ログイン</string>
+    <string name="sign_up_button">新規登録</string>
+    <string name="post_button">送信</string>
+
+    <!-- text field hint -->
+    <string name="hint_password">パスワード</string>
+    <string name="hint_email">Eメール</string>
+    <string name="hint_post_title">投稿タイトルを書いてください。</string>
+    <string name="hint_post_body">投稿の本文を書いてください。</string>
+    <string name="hint_write_comment">投稿に何かコメントがあれば記載してください。</string>
+    <string name="hint_comment_body">ここにコメントを書いてください。</string>
+
+    <string name="progress_loading">ロード中…</string>
+
+    <!-- Toast message -->
+    <string name="toast_sign_in_failure">ログインに失敗しました。</string>
+    <string name="toast_sign_up_failure">新規登録に失敗しました。</string>
+    <string name="toast_post_cancel">投稿の送信をキャンセルしました。</string>
+    <string name="toast_post_comment_cancel">コメントの送信をキャンセルしました。</string>
+    <string name="toast_post_loading">送信しています…</string>
+    <string name="toast_post_failure">エラー！ユーザーの取得に失敗しました。</string>
+
+    <!-- Firebase RealTime Database URI -->
+    <string name="child_posts">posts</string>
+    <string name="child_user_posts">user-posts</string>
+    <string name="child_post_comments">post-comments</string>
+    <string name="child_users">users</string>
+
 </resources>

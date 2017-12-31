@@ -18,8 +18,7 @@ import jp.hotdrop.rtapp.fragment.RecentPostsFragment;
 
 public class MainActivity extends BaseActivity {
 
-    // TODO classのgetSimpleNameにしたい
-    private static final String TAG =  "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private FragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
@@ -36,9 +35,9 @@ public class MainActivity extends BaseActivity {
                     new MyTopPostsFragment()
             };
             private final String[] mFragmentNames = new String[] {
-                    getString(R.string.heading_recent),
-                    getString(R.string.heading_my_posts),
-                    getString(R.string.heading_my_top_posts)
+                    getString(R.string.tab_title_recent),
+                    getString(R.string.tab_title_my_posts),
+                    getString(R.string.tab_title_my_top_posts)
             };
             @Override
             public Fragment getItem(int position) {
@@ -75,14 +74,14 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if(i == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, SignInActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

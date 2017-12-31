@@ -41,7 +41,8 @@
             android:layout_weight="0.8"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:hint="Write a comment..."/>
+            android:textSize="@dimen/text_normal"
+            android:hint="@string/hint_comment_body"/>
 
         <Button
             android:id="@+id/button_post_comment"
@@ -49,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:text="Post"/>
+            android:text="@string/post_button"/>
 
     </LinearLayout>
 

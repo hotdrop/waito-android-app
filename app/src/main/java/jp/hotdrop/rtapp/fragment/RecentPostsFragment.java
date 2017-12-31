@@ -3,6 +3,8 @@ package jp.hotdrop.rtapp.fragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
+import jp.hotdrop.rtapp.R;
+
 public class RecentPostsFragment extends PostListFragment {
 
     public RecentPostsFragment() {
@@ -10,9 +12,6 @@ public class RecentPostsFragment extends PostListFragment {
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
-        // 多分新しいポストは先頭に追加されているので
-        // この指定は最新の100ポストまで、ということになる・・？
-        Query recentPostsQuery = databaseReference.child("posts").limitToFirst(100);
-        return recentPostsQuery;
+        return databaseReference.child(getString(R.string.child_posts)).limitToFirst(100);
     }
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,17 +24,16 @@ import jp.hotdrop.rtapp.PostDetailActivity;
 import jp.hotdrop.rtapp.R;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.viewholder.PostViewHolder;
+import timber.log.Timber;
 
 public abstract class PostListFragment extends Fragment {
 
-    // TODO classのgetSimpleNameにしたい
-    private static final String TAG = "PostListFragment";
+    private static final String TAG = PostListFragment.class.getSimpleName();
 
     private DatabaseReference mDatabase;
 
     private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
-    private LinearLayoutManager mManager;
 
     public PostListFragment() {
     }
@@ -57,9 +55,9 @@ public abstract class PostListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mManager = new LinearLayoutManager(getActivity());
 
-        // TODO 新しく登録したものを一番上に持ってくる？もしくは一番下か。
+        // 新しく登録したものを一番上に持ってくるため逆順にしている。
         mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
@@ -86,17 +84,20 @@ public abstract class PostListFragment extends Fragment {
                 });
 
                 if (model.stars.containsKey(getUid())) {
-                    holder.starView.setImageResource(R.drawable.ic_toggle_star_24);
+                    holder.setStar();
                 } else {
-                    holder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+                    holder.setNotStar();
                 }
 
                 holder.bindToPost(model, new View.OnClickListener() {
                     // TODO lambdaにできるはず
                     @Override
                     public void onClick(View starView) {
-                        DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
+                        DatabaseReference globalPostRef = mDatabase.child(getString(R.string.child_posts))
+                                .child(postRef.getKey());
+                        DatabaseReference userPostRef = mDatabase.child(getString(R.string.child_user_posts))
+                                .child(model.uid)
+                                .child(postRef.getKey());
                         onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
                     }
@@ -117,11 +118,11 @@ public abstract class PostListFragment extends Fragment {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Post p = mutableData.getValue(Post.class);
-                if(p == null) {
+                if (p == null) {
                     return Transaction.success(mutableData);
                 }
 
-                if(p.stars.containsKey(getUid())) {
+                if (p.stars.containsKey(getUid())) {
                     p.starCount = p.starCount - 1;
                     p.stars.remove(getUid());
                 } else {
@@ -134,7 +135,7 @@ public abstract class PostListFragment extends Fragment {
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                Timber.d("postTransaction:onComplete:%s", databaseError);
             }
         });
     }
