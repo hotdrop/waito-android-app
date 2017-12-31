@@ -41,6 +41,7 @@
             android:layout_weight="0.8"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:textSize="@dimen/text_normal"
             android:hint="@string/hint_comment_body"/>
 
         <Button
