@@ -10,8 +10,6 @@ public class MyTopPostsFragment extends PostListFragment {
 
     @Override
     public Query getQuery(DatabaseReference databaseReference) {
-        String myUserId = getUid();
-        Query myTopPostsQuery = databaseReference.child("user-posts").child(myUserId).orderByChild("starCount");
-        return myTopPostsQuery;
+        return databaseReference.child("user-posts").child(getUid()).orderByChild("starCount");
     }
 }

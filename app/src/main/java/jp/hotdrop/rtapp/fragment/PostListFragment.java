@@ -34,7 +34,6 @@ public abstract class PostListFragment extends Fragment {
 
     private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
-    private LinearLayoutManager mManager;
 
     public PostListFragment() {
     }
@@ -56,9 +55,9 @@ public abstract class PostListFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager mManager = new LinearLayoutManager(getActivity());
 
-        // TODO 新しく登録したものを一番上に持ってくるため逆順にしている。
+        // 新しく登録したものを一番上に持ってくるため逆順にしている。
         mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         mRecycler.setLayoutManager(mManager);
@@ -85,9 +84,9 @@ public abstract class PostListFragment extends Fragment {
                 });
 
                 if (model.stars.containsKey(getUid())) {
-                    holder.starView.setImageResource(R.drawable.ic_toggle_star_24);
+                    holder.setStar();
                 } else {
-                    holder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+                    holder.setNotStar();
                 }
 
                 holder.bindToPost(model, new View.OnClickListener() {
@@ -116,11 +115,11 @@ public abstract class PostListFragment extends Fragment {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Post p = mutableData.getValue(Post.class);
-                if(p == null) {
+                if (p == null) {
                     return Transaction.success(mutableData);
                 }
 
-                if(p.stars.containsKey(getUid())) {
+                if (p.stars.containsKey(getUid())) {
                     p.starCount = p.starCount - 1;
                     p.stars.remove(getUid());
                 } else {

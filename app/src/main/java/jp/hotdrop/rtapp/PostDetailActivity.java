@@ -25,6 +25,7 @@ import java.util.List;
 import jp.hotdrop.rtapp.models.Comment;
 import jp.hotdrop.rtapp.models.Post;
 import jp.hotdrop.rtapp.models.User;
+import jp.hotdrop.rtapp.viewholder.CommentViewHolder;
 import timber.log.Timber;
 
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
@@ -141,30 +142,16 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 });
     }
 
-    // TODO 小さいけど一応viewholderパッケージがあるならそこに定義すべき
-    private static class CommentViewHolder extends RecyclerView.ViewHolder {
-        public TextView authorView;
-        public TextView bodyView;
-
-        public CommentViewHolder(View itemView) {
-            super(itemView);
-
-            authorView = itemView.findViewById(R.id.comment_author);
-            bodyView = itemView.findViewById(R.id.comment_body);
-        }
-    }
-
     private static class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
         private ChildEventListener mChildEventListener;
 
-        // TODO idとcommentを分ける意味を理解する。別にPairがあればそれで良さそうだ
         private List<String> mCommentIds = new ArrayList<>();
         private List<Comment> mComments = new ArrayList<>();
 
-        public CommentAdapter(final Context context, DatabaseReference ref) {
+        CommentAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
             mDatabaseReference = ref;
 
@@ -241,8 +228,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         @Override
         public void onBindViewHolder(CommentViewHolder holder, int position) {
             Comment comment = mComments.get(position);
-            holder.authorView.setText(comment.author);
-            holder.bodyView.setText(comment.text);
+            holder.setComment(comment);
         }
 
         @Override

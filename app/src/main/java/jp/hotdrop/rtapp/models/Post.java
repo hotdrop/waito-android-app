@@ -20,7 +20,8 @@ public class Post {
     /**
      * Default constructor required for calls to DataSnapshot.getValue(Post.class)
      */
-    public Post() {}
+    public Post() {
+    }
 
     public Post(String uid, String author, String title, String body) {
         this.uid = uid;

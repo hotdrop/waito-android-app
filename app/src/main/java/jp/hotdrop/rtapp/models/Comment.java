@@ -12,7 +12,8 @@ public class Comment {
     /**
      * Default constructor required for calls to DataSnapshot.getValue(Comment.class)
      */
-    public Comment() {}
+    public Comment() {
+    }
 
     public Comment(String uid, String author, String text) {
         this.uid = uid;
