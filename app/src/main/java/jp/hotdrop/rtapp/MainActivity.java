@@ -8,10 +8,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.hotdrop.rtapp.fragment.MyPostsFragment;
 import jp.hotdrop.rtapp.fragment.MyTopPostsFragment;
 import jp.hotdrop.rtapp.fragment.RecentPostsFragment;
@@ -21,24 +23,29 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private FragmentPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
+
+    @BindView(R.id.container)
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            private final Fragment[] mFragments = new Fragment[] {
+            private final Fragment[] mFragments = new Fragment[]{
                     new RecentPostsFragment(),
                     new MyPostsFragment(),
                     new MyTopPostsFragment()
             };
-            private final String[] mFragmentNames = new String[] {
+            private final String[] mFragmentNames = new String[]{
                     getString(R.string.tab_title_recent),
                     getString(R.string.tab_title_my_posts),
                     getString(R.string.tab_title_my_top_posts)
             };
+
             @Override
             public Fragment getItem(int position) {
                 return mFragments[position];
@@ -48,22 +55,21 @@ public class MainActivity extends BaseActivity {
             public int getCount() {
                 return mFragments.length;
             }
+
             @Override
             public CharSequence getPageTitle(int position) {
                 return mFragmentNames[position];
             }
         };
-        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NewPostActivity.class));
-            }
-        });
+    }
+
+    @OnClick(R.id.fab_new_post)
+    void newPost() {
+        startActivity(new Intent(MainActivity.this, NewPostActivity.class));
     }
 
     @Override

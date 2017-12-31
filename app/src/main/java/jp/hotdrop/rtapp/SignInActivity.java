@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,21 +15,24 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import jp.hotdrop.rtapp.models.User;
 import timber.log.Timber;
 
-public class SignInActivity extends BaseActivity implements View.OnClickListener {
+public class SignInActivity extends BaseActivity {
 
     private static final String TAG = SignInActivity.class.getSimpleName();
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    // TODO databindingかButterKnifeにしたい
-    private EditText mEmailField;
-    private EditText mPasswordField;
-    private Button mSignInButton;
-    private Button mSignUpButton;
+    @BindView(R.id.field_email)
+    EditText mEmailField;
+
+    @BindView(R.id.field_password)
+    EditText mPasswordField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +41,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-        mEmailField = findViewById(R.id.field_email);
-        mPasswordField = findViewById(R.id.field_password);
-        mSignInButton = findViewById(R.id.button_sign_in);
-        mSignUpButton = findViewById(R.id.button_sign_up);
-
-        mSignInButton.setOnClickListener(this);
-        mSignUpButton.setOnClickListener(this);
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -60,7 +54,8 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
-    private void signIn() {
+    @OnClick(R.id.button_sign_in)
+    void signIn() {
         Timber.d("signIn");
 
         if (!validateForm()) {
@@ -92,7 +87,8 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
-    private void signUp() {
+    @OnClick(R.id.button_sign_up)
+    void signUp() {
         Timber.d("signUp");
         if (!validateForm()) {
             return;
@@ -123,6 +119,7 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     /**
      * TODO このバリデーションの中身は必須入力チェックのみ。
      * 必須入力は視覚的に見せるようにしたい。そして次の操作はできないようにしたい。
+     *
      * @return
      */
     private boolean validateForm() {
@@ -156,26 +153,11 @@ public class SignInActivity extends BaseActivity implements View.OnClickListener
     }
 
     private String usernameFromEmail(String email) {
-        return (email.contains("@"))? email.split("@")[0] : email;
+        return (email.contains("@")) ? email.split("@")[0] : email;
     }
 
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(name, email);
         mDatabase.child(getString(R.string.child_users)).child(userId).setValue(user);
-    }
-
-    @Override
-    public void onClick(View v) {
-        // TODO databindingかButterKnifeでボタン毎にイベント作ったほうがいい
-        switch (v.getId()) {
-            case R.id.button_sign_in:
-                signIn();
-                break;
-            case R.id.button_sign_up:
-                signUp();
-                break;
-            default:
-                // ここにきたら基本はNG。Exception投げるか？
-        }
     }
 }
