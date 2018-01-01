@@ -39,8 +39,7 @@
             android:id="@+id/input_layout_field_title"
             android:layout_width="0dp"
             android:layout_weight="0.8"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content" >
 
             <EditText
                 android:id="@+id/field_comment_text"

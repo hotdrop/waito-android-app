@@ -74,13 +74,10 @@ public abstract class PostListFragment extends Fragment {
                 final DatabaseReference postRef = getRef(position);
 
                 final String postKey = postRef.getKey();
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-                        intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
-                        startActivity(intent);
-                    }
+                holder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+                    intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
+                    startActivity(intent);
                 });
 
                 if (model.stars.containsKey(getUid())) {
@@ -89,18 +86,14 @@ public abstract class PostListFragment extends Fragment {
                     holder.setNotStar();
                 }
 
-                holder.bindToPost(model, new View.OnClickListener() {
-                    // TODO lambdaにできるはず
-                    @Override
-                    public void onClick(View starView) {
-                        DatabaseReference globalPostRef = mDatabase.child(getString(R.string.child_posts))
-                                .child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child(getString(R.string.child_user_posts))
-                                .child(model.uid)
-                                .child(postRef.getKey());
-                        onStarClicked(globalPostRef);
-                        onStarClicked(userPostRef);
-                    }
+                holder.bindToPost(model, starView -> {
+                    DatabaseReference globalPostRef = mDatabase.child(getString(R.string.child_posts))
+                            .child(postRef.getKey());
+                    DatabaseReference userPostRef = mDatabase.child(getString(R.string.child_user_posts))
+                            .child(model.uid)
+                            .child(postRef.getKey());
+                    onStarClicked(globalPostRef);
+                    onStarClicked(userPostRef);
                 });
             }
 
