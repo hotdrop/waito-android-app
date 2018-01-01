@@ -84,11 +84,14 @@ public class PostDetailActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-        // TODO 一度ポストしたデータは編集不能
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Post post = dataSnapshot.getValue(Post.class);
+                if(post == null) {
+                    Timber.e("postデータのonDataChangeに失敗しました。post=null");
+                    return;
+                }
                 mAuthorView.setText(post.author);
                 mTitleView.setText(post.title);
                 mBodyView.setText(post.body);
@@ -96,7 +99,7 @@ public class PostDetailActivity extends BaseActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Timber.w(databaseError.toException(), "loadPost:onCancelled");
+                Timber.w(databaseError.toException(), "onCancelled");
                 Toast.makeText(PostDetailActivity.this, getString(R.string.toast_post_cancel), Toast.LENGTH_SHORT).show();
             }
         };
@@ -126,17 +129,20 @@ public class PostDetailActivity extends BaseActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
                         User user = dataSnapshot.getValue(User.class);
+                        if(user == null) {
+                            Timber.e("コメントを送信しましたが、onDataChangeに失敗しました。user=null");
+                            return;
+                        }
                         Comment comment = new Comment(uid, user.username, mCommentField.getText().toString());
-
                         mCommentsReference.push().setValue(comment);
                         mCommentField.setText(null);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Timber.w(databaseError.toException(), "onCancelled");
+                        Toast.makeText(PostDetailActivity.this, getString(R.string.toast_post_comment_cancel), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

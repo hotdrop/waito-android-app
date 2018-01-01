@@ -30,8 +30,8 @@
     <!-- Toast message -->
     <string name="toast_sign_in_failure">ログインに失敗しました。</string>
     <string name="toast_sign_up_failure">新規登録に失敗しました。</string>
-    <string name="toast_post_cancel">投稿の送信をキャンセルしました。</string>
-    <string name="toast_post_comment_cancel">コメントの送信をキャンセルしました。</string>
+    <string name="toast_post_cancel">投稿の送信に失敗しました。</string>
+    <string name="toast_post_comment_cancel">コメントの送信に失敗しました。</string>
     <string name="toast_post_loading">送信しています…</string>
     <string name="toast_post_failure">エラー！ユーザーの取得に失敗しました。</string>
 
