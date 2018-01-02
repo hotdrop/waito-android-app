@@ -52,7 +52,6 @@ public class NewPostActivity extends BaseActivity {
         final String title = mTitleField.getText().toString();
         final String body = mBodyField.getText().toString();
 
-        // TODO validateはメソッドを分けたほうがいいかな
         if (TextUtils.isEmpty(title)) {
             mTitleField.setError(getString(R.string.text_warning_required));
             return;
@@ -64,7 +63,6 @@ public class NewPostActivity extends BaseActivity {
         }
 
         disabledEditingField();
-        // TODO このToastいらない・・
         Toast.makeText(this, getString(R.string.toast_post_loading), Toast.LENGTH_SHORT).show();
 
         final String userId = getUid();

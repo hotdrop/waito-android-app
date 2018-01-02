@@ -137,7 +137,6 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void onAuthSuccess(FirebaseUser user) {
-        // TODO ユーザー名をメアドの左側で決め打ちするのなら、SignUpの時にそれを警告した方がいい
         String username = usernameFromEmail(user.getEmail());
 
         writeNewUser(user.getUid(), username, user.getEmail());
