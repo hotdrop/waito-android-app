@@ -78,4 +78,29 @@
             android:text="@string/sign_up_button" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_buttons"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_large" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_normal"
+            android:gravity="center"
+            android:textColor="@color/orange"
+            android:text="@string/progress_loading"/>
+
+    </LinearLayout>
+
 </RelativeLayout>
