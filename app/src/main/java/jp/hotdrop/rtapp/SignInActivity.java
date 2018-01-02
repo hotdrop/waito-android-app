@@ -3,7 +3,9 @@ package jp.hotdrop.rtapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +31,9 @@ public class SignInActivity extends BaseActivity {
 
     @BindView(R.id.field_password)
     EditText mPasswordField;
+
+    @BindView(R.id.progress_layout)
+    LinearLayout progressLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +63,13 @@ public class SignInActivity extends BaseActivity {
             return;
         }
 
-        // TODO Firebaseの接続が返ってこないとプログレスバーがhideされないので改善の余地あり。addOnFailureListenerを実装すればいい？
-        showProgressDialog();
+        showLoading();
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
-        // TODO signInWithEmailAndPasswordでNPEになるときがあるのでonFailureListenerとか入れて対応できないか
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    hideProgressDialog();
+                    hideLoading();
                     if (task.isSuccessful()) {
                         Timber.d("signIn Success!");
                         onAuthSuccess(task.getResult().getUser());
@@ -74,6 +77,11 @@ public class SignInActivity extends BaseActivity {
                         Timber.w(task.getException(), "signIn failure");
                         Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_in_failure), Toast.LENGTH_SHORT).show();
                     }
+                })
+                .addOnFailureListener(e -> {
+                    hideLoading();
+                    Timber.e(e, "signIn Error");
+                    Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_in_failure), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -84,13 +92,13 @@ public class SignInActivity extends BaseActivity {
             return;
         }
 
-        showProgressDialog();
+        showLoading();
         String email = mEmailField.getText().toString();
         String password = mPasswordField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    hideProgressDialog();
+                    hideLoading();
                     if (task.isSuccessful()) {
                         Timber.d("createUser Success!");
                         onAuthSuccess(task.getResult().getUser());
@@ -98,6 +106,11 @@ public class SignInActivity extends BaseActivity {
                         Timber.w(task.getException(), "createUser failure");
                         Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_up_failure), Toast.LENGTH_SHORT).show();
                     }
+                })
+                .addOnFailureListener(e -> {
+                    hideLoading();
+                    Timber.e(e, "createUser failure");
+                    Toast.makeText(SignInActivity.this, getString(R.string.toast_sign_up_failure), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -141,5 +154,13 @@ public class SignInActivity extends BaseActivity {
     private void writeNewUser(String userId, String name, String email) {
         User user = new User(name, email);
         mDatabase.child(getString(R.string.child_users)).child(userId).setValue(user);
+    }
+
+    private void showLoading() {
+        progressLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        progressLayout.setVisibility(View.GONE);
     }
 }
